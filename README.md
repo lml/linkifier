@@ -1,4 +1,4 @@
-linkifier
+Linkifier
 =========
 
-Linkify Support Gem
+Linkify support gem.
