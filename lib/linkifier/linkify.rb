@@ -7,29 +7,24 @@ module Linkifier
     module ClassMethods
       def linkify(options = {})
         class_eval do
-          cattr_accessor :linkify_resource_name
-          cattr_accessor :linkify_resource_url
-          cattr_accessor :linkify_resource_permalink
-          cattr_accessor :linkify_resource_type
-          self.linkify_resource_name = options[:name] || name
-          self.linkify_resource_url = options[:url] || ""
-          self.linkify_resource_permalink = options[:permalink].nil? ? true : options[:permalink]
-          self.linkify_resource_type = options[:resource_type] || ""
-
           cattr_accessor :linkify_config
           self.linkify_config = Linkifier::LinkifyConfig.new(options)
 
-          after_create :linkify_create_resource
-          after_destroy :linkify_destroy_resource
+          has_one :linkify_resource
 
-          def linkify_create_resource
-            return false unless config.create_iif.call
-            return Linkifier.linkify_create_resource(self)
+          after_create :create_linkify_resource
+          after_destroy :destroy_linkify_resource
+
+          protected
+
+          def create_linkify_resource
+            return if !linkify_config.notify_create || !linkify_config.create_iif.call
+            linkify_resource = LinkifyResource.create(:resource => self)
           end
 
-          def linkify_destroy_resource
-            return false unless config.create_iif.call
-            return Linkifier.linkify_destroy_resource(self)
+          def destroy_linkify_resource
+            return if linkify_resource.nil? || !linkify_config.notify_destroy || !linkify_config.destroy_iif.call
+            linkify_resource.destroy
           end
         end
       end

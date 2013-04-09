@@ -5,10 +5,19 @@ module Linkifier
 
   # Can be set in initializer only
   ENGINE_ATTRIBUTES = [
+    :linkify_url
   ]
 
   # Can be set in initializer or passed as an option to linkify method
   LINKIFY_ATTRIBUTES = [
+    :name,
+    :url,
+    :permalink,
+    :type,
+    :create_iif,
+    :destroy_iif,
+    :notify_create,
+    :notify_destroy
   ]
   
   (ENGINE_ATTRIBUTES + LINKIFY_ATTRIBUTES).each do |attribute|
@@ -17,14 +26,6 @@ module Linkifier
   
   def self.configure
     yield self
-  end
-
-  def linkify_create_resource(r)
-    pp 'created' + r
-  end
-
-  def linkify_destroy_resource(r)
-    pp 'destroyed' + r
   end
 end
 
