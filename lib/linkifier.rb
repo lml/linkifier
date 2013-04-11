@@ -5,7 +5,8 @@ module Linkifier
 
   # Can be set in initializer only
   ENGINE_ATTRIBUTES = [
-    :linkify_url
+    :linkify_url,
+    :authentication_token
   ]
 
   # Can be set in initializer or passed as an option to linkify method
@@ -16,8 +17,9 @@ module Linkifier
     :type,
     :create_iif,
     :destroy_iif,
-    :notify_create,
-    :notify_destroy
+    :notify_created,
+    :notify_destroyed,
+    :notify_updated
   ]
   
   (ENGINE_ATTRIBUTES + LINKIFY_ATTRIBUTES).each do |attribute|

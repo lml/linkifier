@@ -13,18 +13,24 @@ module Linkifier
           has_one :linkify_resource
 
           after_create :create_linkify_resource
-          after_destroy :destroy_linkify_resource
+          after_update :update_linkify_resource
+          before_destroy :destroy_linkify_resource
 
           protected
 
           def create_linkify_resource
-            return if !linkify_config.notify_create || !linkify_config.create_iif.call
+            return if !linkify_config.notify_created || !linkify_config.create_iif.call(self)
             linkify_resource = LinkifyResource.create(:resource => self)
           end
 
           def destroy_linkify_resource
-            return if linkify_resource.nil? || !linkify_config.notify_destroy || !linkify_config.destroy_iif.call
+            return if linkify_resource.nil? || !linkify_config.notify_destroyed || !linkify_config.destroy_iif.call(self)
             linkify_resource.destroy
+          end
+
+          def update_linkify_resource
+            return if !linkify_resource.nil? || !linkify_config.notify_updated || !linkify_config.create_iif.call(self)
+            linkify_resource = LinkifyResource.create(:resource => self)
           end
         end
       end
