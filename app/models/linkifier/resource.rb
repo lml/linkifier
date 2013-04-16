@@ -22,8 +22,8 @@ module Linkifier
 
       request = Net::HTTP::Post.new(uri.request_uri)
       request.set_form_data('auth_token' => Linkifier.authentication_token,
-                            'resource[name]' => app_resource.linkify_config.name,
-                            'resource[url]' => app_resource.linkify_config.url,
+                            'resource[name]' => app_resource.linkify_config.name_proc.call(app_resource),
+                            'resource[url]' => app_resource.linkify_config.url_proc.call(app_resource),
                             'resource[is_permalink]' => app_resource.linkify_config.permalink,
                             'resource[resource_type]' => app_resource.linkify_config.type)
 

@@ -16,13 +16,13 @@ Linkifier.configure do |config|
 
   # Linkify Options (initializer or inline)
 
-  # Name of the resource on Linkify
-  # Default: ""
-  config.name = ""
+  # Proc that should return a unique name for the resource on Linkify
+  # Default: Proc.new { |r| "#{r.class.name} #{r.id}" }
+  config.name_proc = Proc.new { |r| "#{r.class.name} #{r.id}" }
 
-  # URL of the resource that Linkify should point to
-  # Default: ""
-  config.url = ""
+  # Proc that should return a unique URL that can be used to access this resource
+  # Default: Proc.new { |r| "#{r.class.name}/#{r.id}" }
+  config.url_proc = Proc.new { |r| "#{r.class.name}/#{r.id}" }
 
   # Whether the above URL is a permalink
   # Default: true

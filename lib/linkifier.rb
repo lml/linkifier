@@ -11,8 +11,8 @@ module Linkifier
 
   # Can be set in initializer or passed as an option to linkify method
   LINKIFY_ATTRIBUTES = [
-    :name,
-    :url,
+    :name_proc,
+    :url_proc,
     :permalink,
     :type,
     :create_iif,
