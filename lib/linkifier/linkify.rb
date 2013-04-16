@@ -1,4 +1,5 @@
 require "linkifier/linkify_config"
+#require "linkifier/resource"
 
 module Linkifier
   module Linkify

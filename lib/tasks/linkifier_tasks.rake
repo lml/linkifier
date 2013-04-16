@@ -1,4 +1,4 @@
-COPY_TASKS = ['assets/stylesheets', 'assets/javascripts', 'views']
+LINKIFIER_COPY_TASKS = ['assets/stylesheets', 'assets/javascripts', 'views']
 
 namespace :linkifier do
   namespace :install do
@@ -16,7 +16,7 @@ namespace :linkifier do
   end
 
   namespace :copy do
-    COPY_TASKS.each do |path|
+    LINKIFIER_COPY_TASKS.each do |path|
       name = File.basename(path)
       desc "Copy #{name} from linkifier to application"
       task name.to_sym do
@@ -34,7 +34,7 @@ namespace :linkifier do
   
   desc "Copy assets and views from linkifier to application"
   task :copy do
-    COPY_TASKS.each do |path|
+    LINKIFIER_COPY_TASKS.each do |path|
       Rake::Task["linkifier:copy:#{File.basename(path)}"].invoke
     end
   end
