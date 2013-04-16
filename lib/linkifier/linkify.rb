@@ -1,3 +1,5 @@
+require "linkifier/linkify_config"
+
 module Linkifier
   module Linkify
     def self.included(base)
@@ -10,27 +12,32 @@ module Linkifier
           cattr_accessor :linkify_config
           self.linkify_config = Linkifier::LinkifyConfig.new(options)
 
-          has_one :linkify_resource
+          has_one :linkifier_resource, :as => :app_resource, :class_name => 'Linkifier::Resource'
 
-          after_create :create_linkify_resource
-          after_update :update_linkify_resource
-          before_destroy :destroy_linkify_resource
+          after_create :create_linkifier_resource
+          after_update :update_linkifier_resource
+          before_destroy :destroy_linkifier_resource
 
           protected
 
-          def create_linkify_resource
+          def linkifier_resource
+            return nil if self.id.nil?
+            Linkifier::Resource.find_by_app_resource_id_and_app_resource_type(self.id, self.class.name)
+          end
+
+          def create_linkifier_resource
             return if !linkify_config.notify_created || !linkify_config.create_iif.call(self)
-            linkify_resource = LinkifyResource.create(:resource => self)
+            linkifier_resource = Linkifier::Resource.create(:app_resource => self)
           end
 
-          def destroy_linkify_resource
-            return if linkify_resource.nil? || !linkify_config.notify_destroyed || !linkify_config.destroy_iif.call(self)
-            linkify_resource.destroy
+          def destroy_linkifier_resource
+            return if linkifier_resource.nil? || !linkify_config.notify_destroyed || !linkify_config.destroy_iif.call(self)
+            linkifier_resource.destroy
           end
 
-          def update_linkify_resource
-            return if !linkify_resource.nil? || !linkify_config.notify_updated || !linkify_config.create_iif.call(self)
-            linkify_resource = LinkifyResource.create(:resource => self)
+          def update_linkifier_resource
+            return if !linkifier_resource.nil? || !linkify_config.notify_updated || !linkify_config.create_iif.call(self)
+            linkifier_resource = Linkifier::Resource.create(:app_resource => self)
           end
         end
       end

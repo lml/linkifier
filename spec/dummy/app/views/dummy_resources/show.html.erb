@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @dummy_resource.name %>
+</p>
+
+<p>
+  <b>Url:</b>
+  <%= @dummy_resource.url %>
+</p>
+
+<p>
+  <b>Is permalink:</b>
+  <%= @dummy_resource.is_permalink %>
+</p>
+
+<p>
+  <b>Resource type:</b>
+  <%= @dummy_resource.resource_type %>
+</p>
+
+
+<%= link_to 'Edit', edit_dummy_resource_path(@dummy_resource) %> |
+<%= link_to 'Back', dummy_resources_path %>

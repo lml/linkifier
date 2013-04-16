@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-
-  resources :resources
+  resources :dummy_resources
 
 
   mount Linkifier::Engine => "/linkifier"

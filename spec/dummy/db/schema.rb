@@ -11,13 +11,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130401201635) do
+ActiveRecord::Schema.define(:version => 1) do
 
-  create_table "resources", :force => true do |t|
+  create_table "dummy_resources", :force => true do |t|
     t.string   "name"
     t.string   "url"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.boolean  "is_permalink"
+    t.integer  "resource_type"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  create_table "linkifier_resources", :force => true do |t|
+    t.integer  "app_resource_id"
+    t.string   "app_resource_type"
+    t.integer  "linkify_resource_id"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
   end
 
 end

@@ -1,0 +1,29 @@
+<h1>Listing dummy_resources</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Url</th>
+    <th>Is permalink</th>
+    <th>Resource type</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @dummy_resources.each do |dummy_resource| %>
+  <tr>
+    <td><%= dummy_resource.name %></td>
+    <td><%= dummy_resource.url %></td>
+    <td><%= dummy_resource.is_permalink %></td>
+    <td><%= dummy_resource.resource_type %></td>
+    <td><%= link_to 'Show', dummy_resource %></td>
+    <td><%= link_to 'Edit', edit_dummy_resource_path(dummy_resource) %></td>
+    <td><%= link_to 'Destroy', dummy_resource, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Dummy resource', new_dummy_resource_path %>
