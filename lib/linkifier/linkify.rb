@@ -16,22 +16,22 @@ module Linkifier
 
           after_create :create_linkifier_resource
           after_update :update_linkifier_resource
-          before_destroy :destroy_linkifier_resource
+          after_destroy :destroy_linkifier_resource
 
           protected
 
           def create_linkifier_resource
-            return if !linkify_config.notify_created || !linkify_config.create_iif.call(self)
+            return if !linkify_config.notify_created || !linkify_config.create_proc.call(self)
             linkifier_resource = Linkifier::Resource.create(:app_resource => self)
           end
 
           def destroy_linkifier_resource
-            return if linkifier_resource.nil? || !linkify_config.notify_destroyed || !linkify_config.destroy_iif.call(self)
+            return if linkifier_resource.nil? || !linkify_config.notify_destroyed || !linkify_config.destroy_proc.call(self)
             linkifier_resource.destroy
           end
 
           def update_linkifier_resource
-            return if !linkifier_resource.nil? || !linkify_config.notify_updated || !linkify_config.create_iif.call(self)
+            return if !linkifier_resource.nil? || !linkify_config.notify_updated || !linkify_config.create_proc.call(self)
             linkifier_resource = Linkifier::Resource.create(:app_resource => self)
           end
         end

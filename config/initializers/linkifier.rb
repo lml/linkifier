@@ -21,34 +21,34 @@ Linkifier.configure do |config|
   config.name_proc = Proc.new { |r| "#{r.class.name} #{r.id}" }
 
   # Proc that should return a unique URL that can be used to access this resource
-  # Default: Proc.new { |r| "#{r.class.name}/#{r.id}" }
-  config.url_proc = Proc.new { |r| "#{r.class.name.tableize}/#{r.id}" }
+  # Default: Proc.new { |r| "/#{r.class.name.tableize}/#{r.id}" }
+  config.url_proc = Proc.new { |r| "/#{r.class.name.tableize}/#{r.id}" }
 
-  # Whether the above URL is a permalink
-  # Default: true
-  config.permalink = true
+  # Whether the above URL is a permanent link
+  # Default: false
+  config.permalink = false
 
   # The name or ID of the associated Linkify resource_type
   # Default: "Unknown"
   config.resource_type = "Unknown"
 
-  # Resource will only be created in Linkify if this proc returns true
-  # Default: Proc.new { |r| true }
-  config.create_iif = Proc.new { |r| true }
+  # If this proc returns true, resource should be added to Linkify
+  # Default: Proc.new { |r| r.persisted? }
+  config.create_proc = Proc.new { |r| r.persisted? }
 
-  # Resource will only be destroyed in Linkify if this proc returns true
-  # Default: Proc.new { |r| true }
-  config.destroy_iif = Proc.new { |r| true }
+  # If this proc returns true, resource should be removed from Linkify
+  # Default: Proc.new { |r| r.destroyed? }
+  config.destroy_proc = Proc.new { |r| r.destroyed? }
 
-  # Whether Linkify should be notified when this resource is created
+  # Whether Linkify should be notified whenever this resource is created
   # Default: true
   config.notify_created = true
 
-  # Whether Linkify should be notified when this resource is destroyed
-  # Default: true
-  config.notify_destroyed = true
-
-  # Whether Linkify should be notified when this resource is updated
+  # Whether Linkify should be notified whenever this resource is updated
   # Default: false
   config.notify_updated = false
+
+  # Whether Linkify should be notified whenever this resource is destroyed
+  # Default: true
+  config.notify_destroyed = true
 end
