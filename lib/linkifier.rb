@@ -15,8 +15,8 @@ module Linkifier
     :url_proc,
     :permalink,
     :resource_type,
-    :create_proc,
-    :destroy_proc,
+    :create_method,
+    :destroy_method,
     :notify_created,
     :notify_destroyed,
     :notify_updated

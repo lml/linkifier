@@ -21,17 +21,17 @@ module Linkifier
           protected
 
           def create_linkifier_resource
-            return if !linkify_config.notify_created || !linkify_config.create_proc.call(self)
+            return if !linkify_config.notify_created || !self.send(linkify_config.create_method)
             linkifier_resource = Linkifier::Resource.create(:app_resource => self)
           end
 
           def destroy_linkifier_resource
-            return if linkifier_resource.nil? || !linkify_config.notify_destroyed || !linkify_config.destroy_proc.call(self)
+            return if linkifier_resource.nil? || !linkify_config.notify_destroyed || !self.send(linkify_config.destroy_method)
             linkifier_resource.destroy
           end
 
           def update_linkifier_resource
-            return if !linkifier_resource.nil? || !linkify_config.notify_updated || !linkify_config.create_proc.call(self)
+            return if !linkifier_resource.nil? || !linkify_config.notify_updated || !self.send(linkify_config.create_method)
             linkifier_resource = Linkifier::Resource.create(:app_resource => self)
           end
         end

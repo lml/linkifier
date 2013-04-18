@@ -32,13 +32,13 @@ Linkifier.configure do |config|
   # Default: "Unknown"
   config.resource_type = "Unknown"
 
-  # If this proc returns true, resource should be added to Linkify
-  # Default: Proc.new { |r| r.persisted? }
-  config.create_proc = Proc.new { |r| r.persisted? }
+  # If this method returns true, resource should be added to Linkify
+  # Default: 'persisted?'
+  config.create_method = 'persisted?'
 
-  # If this proc returns true, resource should be removed from Linkify
-  # Default: Proc.new { |r| r.destroyed? }
-  config.destroy_proc = Proc.new { |r| r.destroyed? }
+  # If this method returns true, resource should be removed from Linkify
+  # Default: 'destroyed?'
+  config.destroy_method = 'destroyed?'
 
   # Whether Linkify should be notified whenever this resource is created
   # Default: true
