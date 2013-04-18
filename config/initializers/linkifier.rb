@@ -22,7 +22,7 @@ Linkifier.configure do |config|
 
   # Proc that should return a unique URL that can be used to access this resource
   # Default: Proc.new { |r| "#{r.class.name}/#{r.id}" }
-  config.url_proc = Proc.new { |r| "#{r.class.name}/#{r.id}" }
+  config.url_proc = Proc.new { |r| "#{r.class.name.tableize}/#{r.id}" }
 
   # Whether the above URL is a permalink
   # Default: true
@@ -30,7 +30,7 @@ Linkifier.configure do |config|
 
   # The name or ID of the associated Linkify resource_type
   # Default: "Unknown"
-  config.type = "Unknown"
+  config.resource_type = "Unknown"
 
   # Resource will only be created in Linkify if this proc returns true
   # Default: Proc.new { |r| true }

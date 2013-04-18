@@ -20,11 +20,6 @@ module Linkifier
 
           protected
 
-          def linkifier_resource
-            return nil if self.id.nil?
-            Linkifier::Resource.find_by_app_resource_id_and_app_resource_type(self.id, self.class.name)
-          end
-
           def create_linkifier_resource
             return if !linkify_config.notify_created || !linkify_config.create_iif.call(self)
             linkifier_resource = Linkifier::Resource.create(:app_resource => self)

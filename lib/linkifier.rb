@@ -14,7 +14,7 @@ module Linkifier
     :name_proc,
     :url_proc,
     :permalink,
-    :type,
+    :resource_type,
     :create_iif,
     :destroy_iif,
     :notify_created,
@@ -28,6 +28,10 @@ module Linkifier
   
   def self.configure
     yield self
+  end
+
+  def self.is_integer?(str)
+    Integer(str) rescue false
   end
 end
 
