@@ -52,10 +52,12 @@ namespace :linkifier do
       linkifier_resource_ids = Linkifier::Resource.all.collect {|lr| lr.linkify_resource_id}
 
       # Remove remote resources not present locally
-      linkify_resource_ids.each do |rr|
-        next if linkifier_resource_ids.include?(rr)
-        print "Destroying remote resource ##{rr} (Local resource not found)\n"
-        Linkifier::Requests.destroy_linkify_resource(rr)
+      if Linkifier.cleanup_remote_resources
+        linkify_resource_ids.each do |rr|
+          next if linkifier_resource_ids.include?(rr)
+          print "Destroying remote resource ##{rr} (Local resource not found)\n"
+          Linkifier::Requests.destroy_linkify_resource(rr)
+        end
       end
 
       # Remove local resources not present remotely or with invalid app_resources

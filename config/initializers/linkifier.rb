@@ -17,6 +17,12 @@ Linkifier.configure do |config|
   # Default: Linkifier::CA_FILE_PATH
   config.ca_file_path = Linkifier::CA_FILE_PATH
 
+  # Whether this gem should destroy resources in Linkify that are associated
+  # with this site but not present locally as records of linkified models
+  # Disable if you need to manually create resources in Linkify for any reason
+  # Default: true
+  config.cleanup_remote_resources = true
+
 
 
   # Linkify Options (initializer or inline)

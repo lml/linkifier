@@ -7,7 +7,8 @@ module Linkifier
   ENGINE_ATTRIBUTES = [
     :linkify_url,
     :authentication_token,
-    :ca_file_path
+    :ca_file_path,
+    :cleanup_remote_resources
   ]
 
   # Can be set in initializer or passed as an option to linkify method
