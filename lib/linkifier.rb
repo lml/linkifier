@@ -15,12 +15,13 @@ module Linkifier
     :url_proc,
     :permalink,
     :resource_type,
-    :create_method,
-    :destroy_method,
+    :persisted_method,
     :notify_created,
     :notify_destroyed,
     :notify_updated
   ]
+
+  LINKIFIED_CLASSES = []
   
   (ENGINE_ATTRIBUTES + LINKIFY_ATTRIBUTES).each do |attribute|
     mattr_accessor attribute

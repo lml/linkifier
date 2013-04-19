@@ -21,20 +21,25 @@ module Linkifier
           protected
 
           def create_linkifier_resource
-            return if !linkify_config.notify_created || !self.send(linkify_config.create_method)
-            linkifier_resource = Linkifier::Resource.create(:app_resource => self)
+            return unless linkify_config.notify_created
+            linkifier_resource = Linkifier::Resource.create(:app_resource => self) if self.send(linkify_config.persisted_method)
           end
 
           def destroy_linkifier_resource
-            return if linkifier_resource.nil? || !linkify_config.notify_destroyed || !self.send(linkify_config.destroy_method)
-            linkifier_resource.destroy
+            return unless linkify_config.notify_destroyed
+            linkifier_resource.destroy if !linkifier_resource.nil? && !self.send(linkify_config.persisted_method)
           end
 
           def update_linkifier_resource
-            return if !linkifier_resource.nil? || !linkify_config.notify_updated || !self.send(linkify_config.create_method)
-            linkifier_resource = Linkifier::Resource.create(:app_resource => self)
+            return unless linkify_config.notify_updated
+            if linkifier_resource.nil? && self.send(linkify_config.persisted_method)
+              linkifier_resource = Linkifier::Resource.create(:app_resource => self)
+            elsif !linkifier_resource.nil? && !self.send(linkify_config.persisted_method)
+              linkifier_resource.destroy
+            end
           end
         end
+        Linkifier::LINKIFIED_CLASSES << self
       end
     end
   end

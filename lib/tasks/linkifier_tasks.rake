@@ -38,5 +38,47 @@ namespace :linkifier do
       Rake::Task["linkifier:copy:#{File.basename(path)}"].invoke
     end
   end
+
+  desc "Syncs all linkified resources with Linkify"
+  task :sync => :environment do
+    Rails.application.eager_load!
+    uri = Linkifier::Resource.linkify_resources_url(:json)
+    uri.query = URI.encode_www_form(:auth_token => Linkifier.authentication_token)
+
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true if Rails.env.production?
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    # TODO: Verify certs
+
+    request = Net::HTTP::Get.new(uri.request_uri)
+
+    response = http.request(request)
+    if response.kind_of? Net::HTTPSuccess
+      json_response = ActiveSupport::JSON.decode(response.body)
+      linkify_resource_ids = json_response.collect {|r| r['id']}
+
+      Linkifier::Resource.all.each do |lr|
+        unless linkify_resource_ids.include?(lr.linkify_resource_id)
+          print "Deleting linkifier resource ##{lr.id} (Linkify resource ##{lr.linkify_resource_id})\n"
+          lr.delete
+          next
+        end
+        if lr.app_resource.nil? || !lr.app_resource.send(lr.app_resource.linkify_config.persisted_method)
+          print "Destroying linkifier resource ##{lr.id} (Linkify resource ##{lr.linkify_resource_id})\n"
+          lr.destroy
+        end
+      end
+
+      Linkifier::LINKIFIED_CLASSES.each do |lc|
+        lc.all.each do |ar|
+          next unless ar.linkifier_resource.nil? && ar.send(ar.linkify_config.persisted_method)
+          print "Creating new linkifier resource for #{ar.linkify_config.name_proc.call(ar)}\n"
+          Linkifier::Resource.create(:app_resource => ar)
+        end
+      end
+    else
+      print "Could not retrieve resource data from Linkify\n"
+    end
+  end
 end
 

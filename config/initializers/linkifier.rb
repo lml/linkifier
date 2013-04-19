@@ -33,12 +33,10 @@ Linkifier.configure do |config|
   config.resource_type = "Unknown"
 
   # If this method returns true, resource should be added to Linkify
+  # Otherwise, resource should be removed from Linkify
+  # Resources that have been destroyed will always be removed during sync
   # Default: 'persisted?'
-  config.create_method = 'persisted?'
-
-  # If this method returns true, resource should be removed from Linkify
-  # Default: 'destroyed?'
-  config.destroy_method = 'destroyed?'
+  config.persisted_method = 'persisted?'
 
   # Whether Linkify should be notified whenever this resource is created
   # Default: true

@@ -7,5 +7,8 @@ class Install < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :linkifier_resources, [:app_resource_id, :app_resource_type], :unique => true, :name => "index_linkifier_r_on_app_r_id_and_app_r_type"
+    add_index :linkifier_resources, :linkify_resource_id, :unique => true
   end
 end

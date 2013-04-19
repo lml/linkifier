@@ -9,12 +9,22 @@ module Linkifier
     before_destroy :destroy_linkify_resource
 
     validates_presence_of :linkify_resource_id
+    validates_uniqueness_of :app_resource_id, :scope => :app_resource_type, :allow_nil => true
+    validates_uniqueness_of :linkify_resource_id
+
+    def self.linkify_resources_url(format = "")
+      URI(Linkifier.linkify_url) + ("/resources#{}" + (format.blank? ? "" : ".#{format}"))
+    end
+
+    def linkify_resource_url(format = "")
+      URI(Linkifier.linkify_url) + ("/resources/#{linkify_resource_id}" + (format.blank? ? "" : ".#{format}"))
+    end
 
     protected
 
     def create_linkify_resource
       return false if app_resource.nil?
-      uri = URI(Linkifier.linkify_url) + "resources.json"
+      uri = Resource.linkify_resources_url(:json)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if Rails.env.production?
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -37,7 +47,7 @@ module Linkifier
 
     def destroy_linkify_resource
       return if linkify_resource_id.nil?
-      uri = URI(Linkifier.linkify_url) + "resources/#{linkify_resource_id}.json"
+      uri = self.linkify_resource_url(:json)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if Rails.env.production?
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
