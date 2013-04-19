@@ -41,43 +41,47 @@ namespace :linkifier do
 
   desc "Syncs all linkified resources with Linkify"
   task :sync => :environment do
+    require 'linkifier/requests'
     Rails.application.eager_load!
-    uri = Linkifier::Resource.linkify_resources_url(:json)
-    uri.query = URI.encode_www_form(:auth_token => Linkifier.authentication_token)
 
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = Rails.env.production?
-    http.verify_mode = OpenSSL::SSL::VERIFY_PEER
-    http.ca_file = Linkifier.ca_file_path
-
-    request = Net::HTTP::Get.new(uri.request_uri)
-
-    response = http.request(request)
-    if response.kind_of? Net::HTTPSuccess
+    print "Getting Linkify resource data\n"
+    response = Linkifier::Requests.get_linkify_resources
+    if response
       json_response = ActiveSupport::JSON.decode(response.body)
-      linkify_resource_ids = json_response.collect {|r| r['id']}
+      linkify_resource_ids = json_response.collect {|rr| rr['id']}
+      linkifier_resource_ids = Linkifier::Resource.all.collect {|lr| lr.linkify_resource_id}
 
+      # Remove remote resources not present locally
+      linkify_resource_ids.each do |rr|
+        next if linkifier_resource_ids.include?(rr)
+        print "Destroying remote resource ##{rr} (Local resource not found)\n"
+        Linkifier::Requests.destroy_linkify_resource(rr)
+      end
+
+      # Remove local resources not present remotely or with invalid app_resources
       Linkifier::Resource.all.each do |lr|
         unless linkify_resource_ids.include?(lr.linkify_resource_id)
-          print "Deleting linkifier resource ##{lr.id} (Linkify resource ##{lr.linkify_resource_id})\n"
+          print "Deleting local resource ##{lr.id} (Remote resource ##{lr.linkify_resource_id} not found)\n"
           lr.delete
           next
         end
         if lr.app_resource.nil? || !lr.app_resource.send(lr.app_resource.linkify_config.persisted_method)
-          print "Destroying linkifier resource ##{lr.id} (Linkify resource ##{lr.linkify_resource_id})\n"
+          print "Destroying local resource ##{lr.id} (Remote resource ##{lr.linkify_resource_id})\n"
           lr.destroy
         end
       end
 
+      # Create local and remote resources for all valid app_resources
       Linkifier::LINKIFIED_CLASSES.each do |lc|
         lc.all.each do |ar|
           next unless ar.linkifier_resource.nil? && ar.send(ar.linkify_config.persisted_method)
-          print "Creating new linkifier resource for #{ar.linkify_config.name_proc.call(ar)}\n"
+          print "Creating new local and remote resources for #{ar.linkify_config.name_proc.call(ar)}\n"
           Linkifier::Resource.create(:app_resource => ar)
         end
       end
+      print "Sync complete\n"
     else
-      print "Could not retrieve resource data from Linkify\n"
+      print "Could not get resource data from Linkify\n"
     end
   end
 end

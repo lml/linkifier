@@ -33,15 +33,6 @@ module Linkifier
   def self.configure
     yield self
   end
-
-  def self.is_integer?(str)
-    Integer(str) rescue false
-  end
-
-  def self.convert_uri(uri)
-    uri.scheme = Rails.env.production? ? 'https' : 'http'
-    URI(uri.to_s)
-  end
 end
 
 require "linkifier/linkify"
