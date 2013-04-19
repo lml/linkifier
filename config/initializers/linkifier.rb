@@ -5,12 +5,17 @@ Linkifier.configure do |config|
   # Engine Options (initializer only)
 
   # Linkify's URL
-  # Default: "http://www.linkify.org"
-  config.linkify_url = "http://www.linkify.org"
+  # Default: "https://www.linkify.org"
+  config.linkify_url = "https://www.linkify.org"
 
   # Authentication token for this site on Linkify
   # Default: ""
   config.authentication_token = ""
+
+  # Path to your chosen certificates .pem file
+  # Linkifier provides cURL's (Mozilla's) root certificates file by default
+  # Default: Linkifier::CA_FILE_PATH
+  config.ca_file_path = Linkifier::CA_FILE_PATH
 
 
 

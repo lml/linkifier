@@ -13,11 +13,11 @@ module Linkifier
     validates_uniqueness_of :linkify_resource_id
 
     def self.linkify_resources_url(format = "")
-      URI(Linkifier.linkify_url) + ("/resources#{}" + (format.blank? ? "" : ".#{format}"))
+      Linkifier.convert_uri(URI(Linkifier.linkify_url) + ("/resources#{}" + (format.blank? ? "" : ".#{format}")))
     end
 
     def linkify_resource_url(format = "")
-      URI(Linkifier.linkify_url) + ("/resources/#{linkify_resource_id}" + (format.blank? ? "" : ".#{format}"))
+      Linkifier.convert_uri(URI(Linkifier.linkify_url) + ("/resources/#{linkify_resource_id}" + (format.blank? ? "" : ".#{format}")))
     end
 
     protected
@@ -25,10 +25,11 @@ module Linkifier
     def create_linkify_resource
       return false if app_resource.nil?
       uri = Resource.linkify_resources_url(:json)
+
       http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if Rails.env.production?
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      # TODO: Verify certs
+      http.use_ssl = Rails.env.production?
+      http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      http.ca_file = Linkifier.ca_file_path
 
       request = Net::HTTP::Post.new(uri.request_uri)
       resource_type_key = Linkifier.is_integer?(app_resource.linkify_config.resource_type) ? "id" : "name"
@@ -48,10 +49,11 @@ module Linkifier
     def destroy_linkify_resource
       return if linkify_resource_id.nil?
       uri = self.linkify_resource_url(:json)
+
       http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if Rails.env.production?
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      # TODO: Verify certs
+      http.use_ssl = Rails.env.production?
+      http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      http.ca_file = Linkifier.ca_file_path
 
       request = Net::HTTP::Delete.new(uri.request_uri)
       request.set_form_data(:auth_token => Linkifier.authentication_token)

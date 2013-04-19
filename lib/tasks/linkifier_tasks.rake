@@ -46,9 +46,9 @@ namespace :linkifier do
     uri.query = URI.encode_www_form(:auth_token => Linkifier.authentication_token)
 
     http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true if Rails.env.production?
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    # TODO: Verify certs
+    http.use_ssl = Rails.env.production?
+    http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+    http.ca_file = Linkifier.ca_file_path
 
     request = Net::HTTP::Get.new(uri.request_uri)
 

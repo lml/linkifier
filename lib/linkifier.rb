@@ -6,7 +6,8 @@ module Linkifier
   # Can be set in initializer only
   ENGINE_ATTRIBUTES = [
     :linkify_url,
-    :authentication_token
+    :authentication_token,
+    :ca_file_path
   ]
 
   # Can be set in initializer or passed as an option to linkify method
@@ -22,6 +23,8 @@ module Linkifier
   ]
 
   LINKIFIED_CLASSES = []
+
+  CA_FILE_PATH = File.expand_path("../../certs/cacert.pem", __FILE__)
   
   (ENGINE_ATTRIBUTES + LINKIFY_ATTRIBUTES).each do |attribute|
     mattr_accessor attribute
@@ -33,6 +36,11 @@ module Linkifier
 
   def self.is_integer?(str)
     Integer(str) rescue false
+  end
+
+  def self.convert_uri(uri)
+    uri.scheme = Rails.env.production? ? 'https' : 'http'
+    URI(uri.to_s)
   end
 end
 
