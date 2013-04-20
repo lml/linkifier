@@ -1,5 +1,3 @@
-require 'linkifier/requests'
-
 module Linkifier
   class Resource < ActiveRecord::Base
     attr_accessible :app_resource

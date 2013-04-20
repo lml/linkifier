@@ -19,6 +19,8 @@ module Linkifier
       Integer(str) rescue false
     end
 
+    public
+
     def self.linkify_resources_url(format = "")
       convert_uri(URI(Linkifier.linkify_url) + ("/resources#{}" + (format.blank? ? "" : ".#{format}")))
     end
@@ -27,7 +29,11 @@ module Linkifier
       convert_uri(URI(Linkifier.linkify_url) + ("/resources/#{id}" + (format.blank? ? "" : ".#{format}")))
     end
 
-    public
+    def self.linkify_resource_embed_url(id, target = :_top)
+      uri = URI(Linkifier.linkify_url) + "/resources/#{id}"
+      uri.query = URI.encode_www_form(:embed => true, :target => target)
+      uri
+    end
 
     def self.get_linkify_resources
       uri = linkify_resources_url(:json)

@@ -41,7 +41,6 @@ namespace :linkifier do
 
   desc "Syncs all linkified resources with Linkify"
   task :sync => :environment do
-    require 'linkifier/requests'
     Rails.application.eager_load!
 
     print "Getting Linkify resource data\n"

@@ -1,4 +1,4 @@
-require "linkifier/engine"
+require 'linkifier/engine'
 
 module Linkifier
   # Attributes
@@ -36,5 +36,7 @@ module Linkifier
   end
 end
 
-require "linkifier/linkify"
+require 'linkifier/linkify'
+require 'linkifier/requests'
+require 'linkifier/embed_linkify'
 

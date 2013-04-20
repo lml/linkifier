@@ -1,0 +1,15 @@
+<% # Clients of this partial must supply the following variable:
+   # src
+   #
+   # Additionally, they may override the following variables:
+   width ||= "320px"
+   height ||= "240px"
+   border ||= ""
+%>
+
+<%= content_tag(:iframe,
+                "linkify",
+                :src => src,
+                :width => width,
+                :height => height,
+                :style => ("border: #{border};" unless border.blank?)) %>

@@ -41,6 +41,8 @@ module Linkifier
         end
         Linkifier::LINKIFIED_CLASSES << self
       end
+
+      alias_method :linkifier, :linkify
     end
   end
 end
